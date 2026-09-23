@@ -1,0 +1,26 @@
+[
+  {
+    "id": "metscore",
+    "name": "MetSCORE",
+    "description": "A serum NMR metabolomics-based metric for metabolic syndrome.",
+    "version": "0.1.0",
+    "languages": [
+      "Python"
+    ],
+    "interfaces": [
+      "API",
+      "CLI"
+    ],
+    "github": "https://github.com/omilletlab/metscore",
+    "documentation": null,
+    "application": null,
+    "citation": null,
+    "publications": [
+      {
+        "label": "Publication",
+        "title": "MetSCORE: a molecular metric to evaluate the risk of metabolic syndrome based on serum NMR metabolomics",
+        "url": "https://doi.org/10.1186/s12933-024-02363-3"
+      }
+    ]
+  }
+]

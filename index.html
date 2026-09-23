@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Omillet Lab Software</title>
+  <meta name="description" content="Software tools developed by the Omillet Lab.">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+
+<body>
+  <header class="site-header">
+    <nav class="nav container">
+      <div class="brand">
+        <a class="brand-logo" href="https://www.omilletlab.com/" target="_blank" rel="noopener noreferrer">
+          <span class="brand-mark">
+            <img src="assets/img/omilletlab-logo.png" alt="Precision Medicine & Metabolism Lab">
+          </span>
+        </a>
+
+        <span class="brand-text">
+          <a class="brand-name" href="https://www.omilletlab.com/" target="_blank" rel="noopener noreferrer">
+            Precision Medicine &amp; Metabolism Lab
+          </a>
+
+          <a class="brand-affiliation" href="https://www.cicbiogune.es/" target="_blank" rel="noopener noreferrer">
+            CIC bioGUNE
+          </a>
+        </span>
+      </div>
+
+      <div class="nav-links">
+        <a href="https://www.omilletlab.com/" target="_blank" rel="noopener noreferrer">
+          Lab website
+        </a>
+
+        <a href="https://github.com/omilletlab" target="_blank" rel="noopener noreferrer">
+          GitHub
+        </a>
+      </div>
+    </nav>
+
+    <div class="hero container">
+      <h1>Software</h1>
+      <p class="intro">
+        Open scientific tools for reproducible biomedical research.
+      </p>
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="software-grid" class="software-grid"></div>
+
+    <p id="software-error" class="error" hidden>
+      The software catalogue could not be loaded.
+    </p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <div class="footer-identity">
+        <strong>Precision Medicine &amp; Metabolism Lab</strong>
+        <a href="https://www.cicbiogune.es/" target="_blank" rel="noopener noreferrer">
+          CIC bioGUNE
+        </a>
+      </div>
+
+      <div class="footer-links">
+        <a href="https://www.omilletlab.com/" target="_blank" rel="noopener noreferrer">
+          Lab website
+        </a>
+
+        <a href="https://github.com/omilletlab" target="_blank" rel="noopener noreferrer">
+          GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function createLink(label, url, primary = false) {
+      if (!url) return null;
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.textContent = label;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.className = primary ? "button button-primary" : "button";
+
+      return link;
+    }
+
+    function createSoftwareCard(software) {
+      const article = document.createElement("article");
+      article.className = "software-card";
+
+      const header = document.createElement("div");
+      header.className = "software-card-header";
+
+      const title = document.createElement("h2");
+      title.textContent = software.name;
+
+      header.appendChild(title);
+
+      if (software.version) {
+        const version = document.createElement("span");
+        version.className = "software-version";
+        version.textContent = `v${software.version}`;
+        header.appendChild(version);
+      }
+
+      const description = document.createElement("p");
+      description.className = "software-description";
+      description.textContent = software.description;
+
+      const interfaces = document.createElement("div");
+      interfaces.className = "software-interfaces";
+
+      (software.interfaces || []).forEach(interfaceName => {
+        const badge = document.createElement("span");
+        badge.className = "interface-badge";
+        badge.textContent = interfaceName;
+        interfaces.appendChild(badge);
+      });
+
+      const languages = document.createElement("p");
+      languages.className = "software-languages";
+      languages.textContent = (software.languages || []).join(" · ");
+
+      const links = document.createElement("div");
+      links.className = "software-links";
+
+      [
+        createLink("Launch app", software.application, true),
+        createLink("Documentation", software.documentation),
+        createLink("GitHub", software.github),
+        createLink("Cite", software.citation)
+      ]
+        .filter(Boolean)
+        .forEach(link => links.appendChild(link));
+
+      (software.publications || []).forEach((publication, index, publications) => {
+        const defaultLabel =
+          publications.length === 1
+            ? "Publication"
+            : `Publication ${index + 1}`;
+
+        const link = createLink(
+          publication.label || defaultLabel,
+          publication.url
+        );
+
+        if (link) {
+          link.title = publication.title || "";
+          links.appendChild(link);
+        }
+      });
+
+      article.append(
+        header,
+        description,
+        interfaces,
+        languages,
+        links
+      );
+
+      return article;
+    }
+
+    async function loadSoftware() {
+      const grid = document.getElementById("software-grid");
+      const error = document.getElementById("software-error");
+
+      try {
+        const response = await fetch("data/software.json");
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const software = await response.json();
+
+        software.forEach(item => {
+          grid.appendChild(createSoftwareCard(item));
+        });
+      } catch (err) {
+        console.error(err);
+        error.hidden = false;
+      }
+    }
+
+    loadSoftware();
+  </script>
+</body>
+
+</html>
