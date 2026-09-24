@@ -12,6 +12,10 @@
       "CLI"
     ],
     "github": "https://github.com/omilletlab/metscore",
+    "license": {
+      "label": "Academic & non-commercial use",
+      "url": "https://github.com/omilletlab/metscore/blob/main/LICENSE"
+    },
     "documentation": null,
     "application": null,
     "citation": null,

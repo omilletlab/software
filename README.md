@@ -23,6 +23,7 @@ Each entry may include:
 * web application;
 * documentation;
 * GitHub repository;
+* license and permitted-use information;
 * citation information;
 * associated publications.
 
@@ -41,3 +42,10 @@ Then open:
 ```text
 http://localhost:8000
 ```
+
+## License
+
+This software is available for academic and non-commercial research use.
+Commercial use requires prior written authorization from CIC bioGUNE.
+
+See the [LICENSE](LICENSE) file for details.
