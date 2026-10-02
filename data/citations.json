@@ -1,0 +1,7 @@
+{
+  "metscore-paper": {
+    "doi": "10.1186/s12933-024-02363-3",
+    "citation": "Gil-Redondo R, Conde R, Bruzzone C, Seco ML, Bizkarguenaga M, González-Valle B, et al. MetSCORE: a molecular metric to evaluate the risk of metabolic syndrome based on serum NMR metabolomics. Cardiovascular Diabetology 2024;23. https://doi.org/10.1186/s12933-024-02363-3.",
+    "bibtex": "@article{Gil_Redondo_2024, title={MetSCORE: a molecular metric to evaluate the risk of metabolic syndrome based on serum NMR metabolomics}, volume={23}, ISSN={1475-2840}, url={http://dx.doi.org/10.1186/s12933-024-02363-3}, DOI={10.1186/s12933-024-02363-3}, number={1}, journal={Cardiovascular Diabetology}, publisher={Springer Science and Business Media LLC}, author={Gil-Redondo, Rubén and Conde, Ricardo and Bruzzone, Chiara and Seco, Maria Luisa and Bizkarguenaga, Maider and González-Valle, Beatriz and de Diego, Angela and Laín, Ana and Habisch, Hansjörg and Haudum, Christoph and Verheyen, Nicolas and Obermayer-Pietsch, Barbara and Margarita, Sara and Pelusi, Serena and Verde, Ignacio and Oliveira, Nádia and Sousa, Adriana and Zabala-Letona, Amaia and Santos-Martin, Aida and Loizaga-Iriarte, Ana and Unda-Urzaiz, Miguel and Kazenwadel, Jasmin and Berezhnoy, Georgy and Geisler, Tobias and Gawaz, Meinrad and Cannet, Claire and Schäfer, Hartmut and Diercks, Tammo and Trautwein, Christoph and Carracedo, Arkaitz and Madl, Tobias and Valenti, Luca and Spraul, Manfred and Lu, Shelly C. and Embade, Nieves and Mato, José M. and Millet, Oscar}, year={2024}, month=July }"
+  }
+}

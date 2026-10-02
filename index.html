@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Omillet Lab Software</title>
   <meta name="description" content="Software tools developed by the Omillet Lab.">
+  <link rel="icon" type="image/png" href="assets/img/omilletlab-logo.png">
   <link rel="stylesheet" href="assets/styles.css">
 </head>
 
@@ -82,7 +83,25 @@
     </div>
   </footer>
 
+  <dialog id="citation-dialog" class="citation-dialog" aria-labelledby="citation-dialog-title">
+    <div class="citation-dialog-header">
+      <h2 id="citation-dialog-title">Cite</h2>
+
+      <form method="dialog">
+        <button type="submit" class="button citation-close" aria-label="Close citation dialog">
+          Close
+        </button>
+      </form>
+    </div>
+
+    <p id="citation-dialog-intro"></p>
+
+    <div id="citation-dialog-content"></div>
+  </dialog>
+
   <script>
+    let citationData = {};
+
     function createLink(label, url, primary = false) {
       if (!url) return null;
 
@@ -94,6 +113,141 @@
       link.className = primary ? "button button-primary" : "button";
 
       return link;
+    }
+
+    function createButton(label, onClick, primary = false) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = label;
+      button.className = primary ? "button button-primary" : "button";
+      button.addEventListener("click", onClick);
+
+      return button;
+    }
+
+    function getCitationPublications(software) {
+      const citationIds = new Set(software.citations || []);
+
+      return (software.publications || []).filter(publication =>
+        citationIds.has(publication.id)
+      );
+    }
+
+    async function copyText(button, text) {
+      const originalLabel = button.textContent;
+
+      try {
+        await navigator.clipboard.writeText(text);
+        button.textContent = "Copied!";
+      } catch (error) {
+        console.error(error);
+        button.textContent = "Copy failed";
+      }
+
+      window.setTimeout(() => {
+        button.textContent = originalLabel;
+      }, 1500);
+    }
+
+    function downloadBibtex(publication, bibtex) {
+      const blob = new Blob(
+        [bibtex],
+        { type: "application/x-bibtex;charset=utf-8" }
+      );
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = `${publication.id}.bib`;
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      URL.revokeObjectURL(url);
+    }
+
+    function createCitationBlock(publication, showLabel = false) {
+      const generatedCitation = citationData[publication.id];
+
+      const section = document.createElement("section");
+      section.className = "citation-entry";
+
+      if (showLabel) {
+        const heading = document.createElement("h3");
+        heading.textContent =
+          publication.label || publication.title || "Publication";
+
+        section.appendChild(heading);
+      }
+
+      const citationText = document.createElement("p");
+      citationText.className = "citation-text";
+      citationText.textContent =
+        generatedCitation?.citation ||
+        "Citation data is currently unavailable.";
+
+      const actions = document.createElement("div");
+      actions.className = "citation-actions";
+
+      const copyCitation = createButton("Copy citation", () => {
+        copyText(copyCitation, generatedCitation.citation);
+      });
+
+      copyCitation.disabled = !generatedCitation?.citation;
+
+      const downloadBibtexButton = createButton(
+        "Download BibTeX",
+        () => {
+          downloadBibtex(
+            publication,
+            generatedCitation.bibtex
+          );
+        }
+      );
+
+      downloadBibtexButton.disabled = !generatedCitation?.bibtex;
+
+      actions.append(
+        copyCitation,
+        downloadBibtexButton
+      );
+
+      section.append(
+        citationText,
+        actions
+      );
+
+      return section;
+    }
+
+    function openCitationDialog(software) {
+      const dialog = document.getElementById("citation-dialog");
+      const title = document.getElementById("citation-dialog-title");
+      const intro = document.getElementById("citation-dialog-intro");
+      const content = document.getElementById("citation-dialog-content");
+
+      const publications = getCitationPublications(software);
+
+      title.textContent = `Cite ${software.name}`;
+
+      intro.textContent =
+        publications.length === 1
+          ? "Please cite the following publication when using this software."
+          : "Please cite the following publications when using this software.";
+
+      content.replaceChildren();
+
+      const showLabels = publications.length > 1;
+
+      publications.forEach(publication => {
+        content.appendChild(
+          createCitationBlock(publication, showLabels)
+        );
+      });
+
+      dialog.showModal();
     }
 
     function createSoftwareCard(software) {
@@ -149,28 +303,35 @@
         createLink("Launch app", software.application, true),
         createLink("Documentation", software.documentation),
         createLink("GitHub", software.github),
-        licenseLink,
-        createLink("Cite", software.citation)
+        licenseLink
       ]
         .filter(Boolean)
         .forEach(link => links.appendChild(link));
 
-      (software.publications || []).forEach((publication, index, publications) => {
-        const defaultLabel =
-          publications.length === 1
-            ? "Publication"
-            : `Publication ${index + 1}`;
+      (software.publications || []).forEach(
+        (publication, index, publications) => {
+          const defaultLabel =
+            publications.length === 1
+              ? "Publication"
+              : `Publication ${index + 1}`;
 
-        const link = createLink(
-          publication.label || defaultLabel,
-          publication.url
-        );
+          const link = createLink(
+            publication.label || defaultLabel,
+            publication.url
+          );
 
-        if (link) {
-          link.title = publication.title || "";
-          links.appendChild(link);
+          if (link) {
+            link.title = publication.title || "";
+            links.appendChild(link);
+          }
         }
-      });
+      );
+
+      if (getCitationPublications(software).length > 0) {
+        links.appendChild(
+          createButton("Cite", () => openCitationDialog(software))
+        );
+      }
 
       article.append(
         header,
@@ -188,13 +349,30 @@
       const error = document.getElementById("software-error");
 
       try {
-        const response = await fetch("data/software.json");
+        const softwareResponse = await fetch("data/software.json");
 
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}`);
+        if (!softwareResponse.ok) {
+          throw new Error(`Software catalogue: HTTP ${softwareResponse.status}`);
         }
 
-        const software = await response.json();
+        const software = await softwareResponse.json();
+
+        try {
+          const citationResponse = await fetch("data/citations.json");
+
+          if (citationResponse.ok) {
+            citationData = await citationResponse.json();
+          } else {
+            console.warn(
+              `Citation data could not be loaded: HTTP ${citationResponse.status}`
+            );
+          }
+        } catch (citationError) {
+          console.warn(
+            "Citation data could not be loaded.",
+            citationError
+          );
+        }
 
         software.forEach(item => {
           grid.appendChild(createSoftwareCard(item));
