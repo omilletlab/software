@@ -3,28 +3,54 @@
     "id": "metscore",
     "name": "MetSCORE",
     "description": "A serum NMR metabolomics-based metric for metabolic syndrome.",
-    "version": "0.1.0",
+    "version": "1.0.1",
     "languages": [
       "Python"
     ],
     "interfaces": [
       "API",
-      "CLI"
+      "CLI",
+      "Web interface"
     ],
     "github": "https://github.com/omilletlab/metscore",
     "license": {
       "label": "Academic & non-commercial use",
       "url": "https://github.com/omilletlab/metscore/blob/main/LICENSE"
     },
-    "documentation": null,
-    "application": null,
-    "citation": null,
+    "documentation": "https://omilletlab.github.io/metscore/",
+    "application": "https://metscore.streamlit.app/",
     "publications": [
       {
+        "id": "metscore-paper",
         "label": "Publication",
         "title": "MetSCORE: a molecular metric to evaluate the risk of metabolic syndrome based on serum NMR metabolomics",
+        "doi": "10.1186/s12933-024-02363-3",
         "url": "https://doi.org/10.1186/s12933-024-02363-3"
       }
+    ],
+    "citations": [
+      "metscore-paper"
     ]
+  },
+  {
+    "id": "mr-shift",
+    "name": "MR-SHIFT",
+    "description": "A MATLAB-based tool for simulation, fitting and analysis of NMR spectra using spin-system information.",
+    "version": null,
+    "languages": [
+      "MATLAB"
+    ],
+    "interfaces": [
+      "Desktop GUI"
+    ],
+    "github": "https://github.com/omilletlab/MR_SHIFT",
+    "license": {
+      "label": "Academic & non-commercial use",
+      "url": "https://github.com/omilletlab/MR_SHIFT/blob/main/LICENSE"
+    },
+    "documentation": null,
+    "application": null,
+    "publications": [],
+    "citations": []
   }
 ]
