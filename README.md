@@ -78,6 +78,8 @@ The generated file is used by the portal to provide:
 
 Do not edit generated citation text or BibTeX manually. Update the DOI or citation references in `data/software.json` and run the script again instead.
 
+Some publishers return titles and journal names with embedded line breaks in their DOI metadata. The script replaces them with single spaces, so the generated citation and BibTeX are always single-line. If a generated entry looks malformed, fix the script rather than the output file.
+
 ## Adding software
 
 To add a new software entry:
@@ -124,7 +126,10 @@ Before considering a change complete, also run:
 
 ```bash
 git diff --check
+uvx ruff check scripts/
 ```
+
+`uvx` runs ruff without installing it.
 
 ## Deployment
 

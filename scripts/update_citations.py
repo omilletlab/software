@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 
 import json
+import re
 import sys
 from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.parse import quote
 from urllib.request import Request, urlopen
-import re
-
 
 ROOT = Path(__file__).resolve().parents[1]
 SOFTWARE_FILE = ROOT / "data" / "software.json"
@@ -32,7 +31,10 @@ def fetch_doi_format(doi, accept):
 
     try:
         with urlopen(request, timeout=30) as response:
-            return response.read().decode("utf-8").strip()
+            text = response.read().decode("utf-8").strip()
+
+            # Some publishers return titles with embedded line breaks.
+            return re.sub(r"\s*[\r\n]+\s*", " ", text)
     except HTTPError as exc:
         raise RuntimeError(
             f"DOI request for {doi} failed with HTTP {exc.code}"
