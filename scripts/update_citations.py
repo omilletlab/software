@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 
 import json
+import re
 import sys
 from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.parse import quote
 from urllib.request import Request, urlopen
-import re
-
 
 ROOT = Path(__file__).resolve().parents[1]
 SOFTWARE_FILE = ROOT / "data" / "software.json"
