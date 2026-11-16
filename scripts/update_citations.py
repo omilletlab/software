@@ -32,7 +32,10 @@ def fetch_doi_format(doi, accept):
 
     try:
         with urlopen(request, timeout=30) as response:
-            return response.read().decode("utf-8").strip()
+            text = response.read().decode("utf-8").strip()
+
+            # Some publishers return titles with embedded line breaks.
+            return re.sub(r"\s*[\r\n]+\s*", " ", text)
     except HTTPError as exc:
         raise RuntimeError(
             f"DOI request for {doi} failed with HTTP {exc.code}"
