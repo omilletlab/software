@@ -126,7 +126,10 @@ Before considering a change complete, also run:
 
 ```bash
 git diff --check
+uvx ruff check scripts/
 ```
+
+`uvx` runs ruff without installing it.
 
 ## Deployment
 
